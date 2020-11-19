@@ -136,4 +136,8 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     
     df['lemmatized'] = df[column].apply(basic_clean).apply(lemmatize)
     
+    words = [re.sub(r'([^a-z0-9\s]|\s.\s)', '', str(doc)).split() for doc in df.clean]
+    
+    df = pd.concat([df, pd.DataFrame({'words': words})], axis=1)
+    
     return df[['language', column, 'stemmed', 'lemmatized', 'clean']]
