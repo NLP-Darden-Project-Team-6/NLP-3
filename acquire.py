@@ -10,8 +10,9 @@ def make_soup(url=''):
     This helper function takes in a url and requests and parses HTML
     returning a soup object.
     '''
-    headers = {'User-Agent': 'Codeup Data Science'} 
-    response = get(url, headers=headers)    
+    headers = {'User-Agent': 'NLP3'} 
+    response = get(url, headers=headers)
+    sleep(3)
     soup = BeautifulSoup(response.text, 'html.parser')
     return soup
 
@@ -38,12 +39,31 @@ def get_url_links(urls=[]):
 
     for url in urls:
         soup = make_soup(url)
-        sleep(3)
         extension = soup.find_all("a", {"class":"v-align-middle"}, {"data-hydro-click":"url"})
         for count in range(len(extension)):
             extensions.append("http://github.com/" + extension[count].get_text())
     return extensions
 
 
-def scrape_respositories(repository_urls=[]):
-    pass
+def scrape_repos(repo_urls=[]):
+    readme_data = []
+    requests = 0
+    for repo in repo_urls:
+        requests += 1
+        print(requests)
+        repo_soup = make_soup(repo)
+        if repo_soup.find('span', class_="Progress-item", itemprop='keywords', attrs='aria-label') == None:
+            continue
+        else:
+            for sentence in repo_soup.findAll(class_="markdown-body entry-content container-lg"):
+                readme = ''.join(sentence.findAll(text=True))
+            language = repo_soup.find('span', class_="Progress-item", itemprop='keywords', attrs='aria-label')['aria-label']
+            repo_info = {'language' : language,
+                     'readme': readme}
+            readme_data.append(repo_info)
+    return readme_data
+    
+    
+    
+    
+    
