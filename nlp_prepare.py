@@ -11,6 +11,15 @@ from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 
 
+def clean_language(df):
+    '''
+    
+    '''
+    df.language = df.language.str.replace(r'[\d+\.]', '')
+    df.language = df.language.str.replace('C', 'C++')
+    return df
+
+
 
 def basic_clean(string):
     '''
@@ -21,6 +30,7 @@ def basic_clean(string):
              .encode('ascii', 'ignore')\
              .decode('utf-8', 'ignore')
     string = re.sub(r'[^\w\s]', '', string).lower()
+    
     return string
 
 ##############################
@@ -113,6 +123,8 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     returns a df with the text article title, original text, stemmed text,
     lemmatized text, cleaned, tokenized, & lemmatized text with stopwords removed.
     '''
+    df = clean_language(df)
+    
     df['clean'] = df[column].apply(basic_clean)\
                             .apply(tokenize)\
                             .apply(remove_stopwords, 
@@ -124,4 +136,4 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     
     df['lemmatized'] = df[column].apply(basic_clean).apply(lemmatize)
     
-    return df[['title', column, 'stemmed', 'lemmatized', 'clean']]
+    return df[['language', column, 'stemmed', 'lemmatized', 'clean']]
