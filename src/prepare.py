@@ -7,8 +7,12 @@ import re
 import json
 
 import nltk
+from nltk.stem.porter import PorterStemmer
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
+
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def clean_language(df):
@@ -17,8 +21,18 @@ def clean_language(df):
     '''
     df.language = df.language.str.replace(r'[\d+\.]', '')
     df.language = df.language.str.replace('C', 'C++')
+    df.language = df.language.str.strip()
     return df
 
+def clean_numeric_columns(df):
+    numeric_columns = ['stars', 'commits', 'forks']
+
+    for column in numeric_columns:
+        df[column] = df[column].astype('string')
+        df[column] = df[column].str.replace('k', '00')
+        df[column] = df[column].str.replace(r'[,.]', '')
+        df[column] = df[column].astype(np.int)   
+    return df
 
 
 def basic_clean(string):
@@ -41,7 +55,7 @@ def tokenize(string):
     returns a tokenized string.
     '''
     # Create tokenizer.
-    tokenizer = nltk.tokenize.ToktokTokenizer()
+    tokenizer = ToktokTokenizer()
     
     # Use tokenizer
     string = tokenizer.tokenize(string, return_str=True)
@@ -56,7 +70,7 @@ def stem(string):
     returns a string with words stemmed.
     '''
     # Create porter stemmer.
-    ps = nltk.porter.PorterStemmer()
+    ps = PorterStemmer()
     
     # Use the stemmer to stem each word in the list of words we created by using split.
     stems = [ps.stem(word) for word in string.split()]
@@ -116,7 +130,7 @@ def remove_stopwords(string, extra_words=[], exclude_words=[]):
 ###############################
 
 
-def prep_article_data(df, column, extra_words=[], exclude_words=[]):
+def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], explore=True):
     '''
     This function take in a df and the string name for a text column with 
     option to pass lists for extra_words and exclude_words and
@@ -124,6 +138,7 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     lemmatized text, cleaned, tokenized, & lemmatized text with stopwords removed.
     '''
     df = clean_language(df)
+    df = clean_numeric_columns(df)
     
     df['clean'] = df[column].apply(basic_clean)\
                             .apply(tokenize)\
@@ -140,9 +155,21 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     
     df = pd.concat([df, pd.DataFrame({'words': words})], axis=1)
     
-    return df[['language', column, 'stemmed', 'lemmatized', 'clean']]
-
-    ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt']
+    df = df[['language', column, 'lemmatized', 'clean', 'words', 'watchers', 'stars', 'forks', 'commits']]
+    
+    tfidf = TfidfVectorizer()
+    X_tfidf = tfidf.fit_transform(df.readme)
+    X = pd.concat([df, pd.DataFrame(X_tfidf.todense())], axis=1)
+    y = df.language
+    
+    X_train_validate, X_test, y_train_validate, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=1)
+    X_train, X_validate, y_train, y_validate = train_test_split(X_train_validate, y_train_validate, stratify=y_train_validate, test_size=0.25, random_state=1)
+    
+    if explore == True:
+        train = pd.concat([X_train, y_train], axis=1)
+        return train[['language', 'clean', 'words', 'watchers', 'stars', 'forks', 'commits']]
+    else:
+        return X_train, y_train, X_validate, y_validate, X_test, y_test
 
 
 def clean(text):
