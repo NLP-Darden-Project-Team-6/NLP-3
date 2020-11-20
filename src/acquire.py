@@ -58,8 +58,16 @@ def scrape_repos(repo_urls=[]):
             for sentence in repo_soup.findAll(class_="markdown-body entry-content container-lg"):
                 readme = ''.join(sentence.findAll(text=True))
             language = repo_soup.find('span', class_="Progress-item", itemprop='keywords', attrs='aria-label')['aria-label']
+            watchers = repo_soup.find_all('a', class_="social-count")[0].text.strip()
+            stars = repo_soup.find_all('a', class_="social-count")[1].text.strip()
+            forks = repo_soup.find_all('a', class_="social-count")[2].text.strip()
+            commits = repo_soup.find_all('span', class_="d-none d-sm-inline")[1].get_text().replace('commits', '').strip()
             repo_info = {'language' : language,
-                     'readme': readme}
+                     'readme': readme,
+                     'watchers': watchers,
+                     'stars': stars,
+                     'forks': forks,
+                     'commits': commits}
             readme_data.append(repo_info)
     return readme_data
     
