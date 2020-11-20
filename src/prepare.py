@@ -172,7 +172,7 @@ def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], expl
         return X_train, y_train, X_validate, y_validate, X_test, y_test
 
 
-def clean(text):
+def clean_explore(text):
     ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt']
 
     'A simple function to cleanup text data'
