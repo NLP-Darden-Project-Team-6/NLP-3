@@ -141,3 +141,19 @@ def prep_article_data(df, column, extra_words=[], exclude_words=[]):
     df = pd.concat([df, pd.DataFrame({'words': words})], axis=1)
     
     return df[['language', column, 'stemmed', 'lemmatized', 'clean']]
+
+    ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt']
+
+
+def clean(text):
+    ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt']
+
+    'A simple function to cleanup text data'
+    wnl = nltk.stem.WordNetLemmatizer()
+    stopwords = nltk.corpus.stopwords.words('english') + ADDITIONAL_STOPWORDS
+    text = (unicodedata.normalize('NFKD', text)
+             .encode('ascii', 'ignore')
+             .decode('utf-8', 'ignore')
+             .lower())
+    words = re.sub(r'[^\w\s]', '', text).split()
+    return [wnl.lemmatize(word) for word in words if word not in stopwords]
