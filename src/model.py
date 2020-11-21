@@ -3,11 +3,11 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from preprocessing import tfidf_scaler, train_validate_test_split, scale_numeric_columns
 
+
 def model_data():
     '''
     
     '''
-    
     df = pd.read_csv('../../data/model/model_readme_data.csv')
     
     X = df.drop(columns='language_y')
