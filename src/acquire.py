@@ -46,6 +46,11 @@ def get_url_links(urls=[]):
 
 
 def scrape_repos(repo_urls=[]):
+    '''
+    This function takes in a list of urls
+    and returns the language, watchers, stars, forks, commits
+    and text of the readme files associated with a single url
+    '''
     readme_data = []
     requests = 0
     for repo in repo_urls:
@@ -61,7 +66,7 @@ def scrape_repos(repo_urls=[]):
             watchers = repo_soup.find_all('a', class_="social-count")[0].text.strip()
             stars = repo_soup.find_all('a', class_="social-count")[1].text.strip()
             forks = repo_soup.find_all('a', class_="social-count")[2].text.strip()
-            commits = repo_soup.find_all('span', class_="d-none d-sm-inline")[1].get_text().replace('commits', '').strip()
+            commits = repo_soup.find_all('strong')[3].text
             repo_info = {'language' : language,
                      'readme': readme,
                      'watchers': watchers,

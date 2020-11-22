@@ -17,7 +17,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def clean_language(df):
     '''
-    
+    This function takes the language column,
+    strips the percentage numbers on the end
+    and adds the plus signs to C
     '''
     df.language = df.language.str.replace(r'[\d+\.]', '')
     df.language = df.language.str.replace('C', 'C++')
@@ -25,6 +27,11 @@ def clean_language(df):
     return df
 
 def clean_numeric_columns(df):
+    '''
+    This function takes the stars, commit and forks columns,
+    strips them to only numbers,
+    and changes the type to integer
+    '''
     numeric_columns = ['stars', 'commits', 'forks']
 
     for column in numeric_columns:
@@ -104,7 +111,8 @@ def lemmatize(string):
 
 def remove_stopwords(string, extra_words=[], exclude_words=[]):
     '''
-    This function takes in a string, optional extra_words and exclude_words parameters
+    This function takes in a string, 
+    optional extra_words and exclude_words parameters
     with default empty lists and returns a string.
     '''
     # Create stopword_list.
@@ -173,9 +181,10 @@ def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], expl
 
 
 def clean_explore(text):
+    '''
+    A simple function to cleanup text data in preparation of exploration
+    '''
     ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt']
-
-    'A simple function to cleanup text data'
     wnl = nltk.stem.WordNetLemmatizer()
     stopwords = nltk.corpus.stopwords.words('english') + ADDITIONAL_STOPWORDS
     text = (unicodedata.normalize('NFKD', text)
