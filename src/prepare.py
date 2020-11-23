@@ -167,17 +167,16 @@ def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], expl
     
     tfidf = TfidfVectorizer()
     X_tfidf = tfidf.fit_transform(df.readme)
-    X = pd.concat([df, pd.DataFrame(X_tfidf.todense())], axis=1)
+    
+    X = pd.concat([df, pd.DataFrame(X_tfidf.todense(), columns=tfidf.get_feature_names())], axis=1)
+    X = X.iloc[:, :-1177]
+    X = X.drop(columns = 'language')
     y = df.language
     
     X_train_validate, X_test, y_train_validate, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=1)
     X_train, X_validate, y_train, y_validate = train_test_split(X_train_validate, y_train_validate, stratify=y_train_validate, test_size=0.25, random_state=1)
     
-    if explore == True:
-        train = pd.concat([X_train, y_train], axis=1)
-        return train[['language', 'clean', 'words', 'watchers', 'stars', 'forks', 'commits']]
-    else:
-        return X_train, y_train, X_validate, y_validate, X_test, y_test
+    return X_train, y_train, X_validate, y_validate, X_test, y_test
 
 
 def clean_explore(text):
