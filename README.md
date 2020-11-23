@@ -52,6 +52,7 @@ ___
 | Features | Definition |
 | :------- | :-------|
 | readme | text of the readme file |
+| words | data that has been cleaned and seperated by words |
 | watchers | users who are watching the repository |
 | stars | users who have starred the repository |
 | forks | users who have forked the repository |
@@ -105,19 +106,23 @@ ___
 >    - normalize, tokenize, stem, lemmatize and remove stop words
 >   - split into train, validate, and test
 >    - create a prepare.py to automate the process
+>    - create a csv file for future use
 >
 >- explore
 >    - split words into sets of 1, 2 and 3
->    - Determine significance both visually and statistically
+>    - determine significance both visually and statistically
 >    - document and consider the results for modeling
 > 
 >- model and evaluation
 >    - find which features are most influential
->    - try different algorithms: (list models)
+>    - try different algorithms: 
+>       - Ridge Classifier
+>       - Random Forest
+>       - Gradient Boost
 >    - evaluate on train
 >    - evaluate on validate
 >    - select best model and test to verify
->    - create a model.py to automate the process
+>    - create a preprocessing.py and model.py to automate the process
 >
 >- conclusion
 >    - summarize findings
@@ -133,9 +138,9 @@ ___
 <a id='section_5'></a>
 ## How to Reproduce
 
->1. Download data csv from [here](insert link here)
->2. Install [prepare.py](insert link here) and [model.py](insert link here) into your working directory.
+>1. Download data csv from [here](https://raw.githubusercontent.com/NLP-Darden-Project-Team-6/NLP-3/master/data/raw/readmes.json) or use the [acquire.py](https://github.com/NLP-Darden-Project-Team-6/NLP-3/blob/master/src/acquire.py) functions
+>2. Prepare the data with the [prepare.py](https://github.com/NLP-Darden-Project-Team-6/NLP-3/blob/master/src/prepare.py) functions or install the prepped csv [here](https://raw.githubusercontent.com/NLP-Darden-Project-Team-6/NLP-3/master/data/prepared/prepared_readmes.csv)
 >3. Run a jupyter notebook importing the necessary libraries and functions.
->4. Follow along or forge your own exploratory path. 
+>4. Follow along in the [summary notebook](https://github.com/NLP-Darden-Project-Team-6/NLP-3/blob/master/summary.ipynb) or forge your own exploratory path. 
 
 [back to the top](#section_6)
