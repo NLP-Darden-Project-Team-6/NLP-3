@@ -115,8 +115,10 @@ def remove_stopwords(string, extra_words=[], exclude_words=[]):
     optional extra_words and exclude_words parameters
     with default empty lists and returns a string.
     '''
+    ADDITIONAL_STOPWORDS = ['r', 'u', '2', 'ltgt', 'readme', 'clean']
+    
     # Create stopword_list.
-    stopword_list = stopwords.words('english')
+    stopword_list = stopwords.words('english') + ADDITIONAL_STOPWORDS
     
     # Remove 'exclude_words' from stopword_list to keep these in my text.
     stopword_list = set(stopword_list) - set(exclude_words)
@@ -147,6 +149,7 @@ def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], expl
     '''
     df = clean_language(df)
     df = clean_numeric_columns(df)
+ 
     
     df['clean'] = df[column].apply(basic_clean)\
                             .apply(tokenize)\
@@ -166,10 +169,14 @@ def prep_readme_data(df, column='readme', extra_words=[], exclude_words=[], expl
     df = df[['language', column, 'lemmatized', 'clean', 'words', 'watchers', 'stars', 'forks', 'commits']]
     
     tfidf = TfidfVectorizer()
-    X_tfidf = tfidf.fit_transform(df.readme)
     
-    X = pd.concat([df, pd.DataFrame(X_tfidf.todense(), columns=tfidf.get_feature_names())], axis=1)
-    X = X.iloc[:, :-1177]
+    X_tfidf = tfidf.fit_transform(df.clean)
+    df_tfidf = pd.DataFrame(X_tfidf.todense(), columns=tfidf.get_feature_names())
+    df_tfidf.drop(columns = 'clean', inplace = True)
+    
+    
+    X = pd.concat([df, df_tfidf], axis=1)
+    #X = X.iloc[:, :-1177]
     X = X.drop(columns = 'language')
     y = df.language
     
