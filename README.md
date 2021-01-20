@@ -16,24 +16,20 @@
 <a id='section_1'></a>
 ## About the Project
 > We are future data scientist testing our knowledge of Natural Language Processing. For this project, we will be scraping data from over nearly 600 GitHub repository READMEs' using a variety of methods and build machine learning models from the data we pooled. 
-___
 
 <br>
 
 ## Background
 > GitHub is a subsidiary of Microsoft which provides hosting for software development and version control using Git. As of January 2020, GitHub reports having over 40 million users and more than 190 million repositories(including at least 28 million public repositories), making it the largest host of source code in the world.
-___
 
 <br>
 
 >*Acknowledgement:The dataset was mined from github.com* 
 
-___
-
 <br>
 
 ## Goals
-> Our goal for this project is to build a model that can predict what programming language a repository is, given the text of the README file. We will deliver the following in a github repository: 
+> Our goal for this project is to build a model that can predict the programming language of a repository, given the text from its README file. We will deliver the following in a github repository: 
 >
 > - A clearly named final notebook. This notebook will be what will contain plenty of markdown documentation and cleaned up code.
 > - A README that explains what the project is, how to reproduce the work, and our notes from project planning
